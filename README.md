@@ -1,4 +1,4 @@
-# KernelSU_Oneplus_9RT_Action
+# KernelSU_Oneplus_martini_Guide
 Compile KernelSU for Oneplus 9RT(martini)[MT2110/MT2111]
 
 ## Warning:warning: :warning: :warning:
