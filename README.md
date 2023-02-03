@@ -1,5 +1,7 @@
 # KernelSU_Oneplus_martini_Guide
-Compile KernelSU for Oneplus 9RT(martini)[MT2110/MT2111]
+Guide of compile KernelSU for Oneplus 9RT(martini)[MT2110/MT2111]
+
+I have made the [original repository](https://github.com/natsumerinchan/KernelSU_Oneplus_9RT_Action.git) private.
 
 ## Warning:warning: :warning: :warning:
 - 1.Please backup the offical boot.img and vendor_dlkm.img before you flash!!!You can use [ssut/payload-dumper-go](https://github.com/ssut/payload-dumper-go.git) to extract them from `payload.bin` in ROM.zip.
