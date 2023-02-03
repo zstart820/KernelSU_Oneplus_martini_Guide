@@ -40,7 +40,7 @@ Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_O
 ## Instructions
 ### 1.How to Install
 - 1.Extract Oneplus-9RT-*.zip
-- 2.Download [platform-tools](https://developer.android.com/studio/releases/platform-tools) (Don't install from Ubuntu20.04 source or scoop.)
+- 2.Download [platform-tools](https://developer.android.com/studio/releases/platform-tools) (Don't install from Ubuntu20.04 source.)
 - 3.Reboot to fastbootd mode(not bootloader),flash "vendor_dlkm.img"(If exist.)
 ```
 adb reboot fastboot
