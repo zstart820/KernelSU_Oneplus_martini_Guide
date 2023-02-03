@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set +x
+set -eux
 
 setup_export() {
     export KERNEL_PATH=$PWD
