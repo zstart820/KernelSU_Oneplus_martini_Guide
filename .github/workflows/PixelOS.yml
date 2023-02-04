@@ -6,9 +6,14 @@ on:
     workflow_dispatch:
       inputs:
         RELEASE_CONFIG:
-          description: 'Upload to Releases or not'
+          description: 'Upload to Releases'
           required: true
           default: "true"
+          type: boolean
+        ARTIFACT_CONFIG:
+          description: 'Upload to Actions'
+          required: true
+          default: "false"
           type: boolean
         DEVICE_NAME:
           description: 'Device Name'
@@ -46,12 +51,12 @@ on:
           default: "martini"
           type: string
         KERNELSU_CONFIG:
-          description: "Would you want to integrate KernelSU into the kernel?"
+          description: 'Compile KernelSU'
           required: true
           default: "true"
           type: boolean                   
         CCACHE_CONFIG:
-          description: "Would you want to use ccache to improve compile speed? "
+          description: 'Use Ccache'
           required: true
           default: "true"
           type: boolean
@@ -171,7 +176,8 @@ jobs:
           sudo bash ./repack_dlkm.sh vendor_dlkm
           mv vendor_dlkm-ext4.img vendor_dlkm.img
 
-      - name: Upload to Action
+      - name: Upload Artifact
+        if: github.event.inputs.ARTIFACT_CONFIG == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.inputs.DEVICE_NAME }}-PixelOS-${{ steps.current-time.outputs.formattedTime }}
