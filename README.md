@@ -5,7 +5,8 @@ I have made the [original repository](https://github.com/natsumerinchan/KernelSU
 
 ## Warning:warning: :warning: :warning:
 - 1.Please backup the offical boot.img and vendor_dlkm.img before you flash!!!You can use [ssut/payload-dumper-go](https://github.com/ssut/payload-dumper-go.git) to extract them from `payload.bin` in ROM.zip.
-- 2.I am not the author of the kernel, so I will not release any compiled products in this repository, please fork this repository (Sync to your private repository is better) and run workflow by yourself."If you are not a kernel author and use someone else's source code to build KernelSU, please use it for your own use only and do not share it with others, it is respectful to the author." --[xiaoleGun/KernelSU_Action](https://github.com/xiaoleGun/KernelSU_Action.git) (I will create a Private repository to compile for me.)
+- 2.I am not the author of the kernel, so I will not release any compiled products in this repository, please fork this repository (Sync to your private repository is better) and run workflow by yourself.
+- 3."If you are not a kernel author and use someone else's source code to build KernelSU, please use it for your own use only and do not share it with others, it is respectful to the author." --[xiaoleGun/KernelSU_Action](https://github.com/xiaoleGun/KernelSU_Action.git) (I will create a Private repository to compile for me.)
 
 ## Support ROMS
 
