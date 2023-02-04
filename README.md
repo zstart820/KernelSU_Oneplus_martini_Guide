@@ -20,7 +20,7 @@ I have made the [original repository](https://github.com/natsumerinchan/KernelSU
 ### 1.Github Action
 Fork this repository and run workflows by yourselves.
 
-![Github Action](https://user-images.githubusercontent.com/64072399/213983210-c04ecdee-4f65-4854-a854-42ee587508a4.png)
+![Github Action](https://user-images.githubusercontent.com/64072399/216762170-8cce9b81-7dc1-4e7d-a774-b05f281a9bff.png)
 
 If you get this notice when you try to upload to releases,please go to `settings`-`actions`-`General`,set Workflow permissions as 'Read and write permissions'.
 
