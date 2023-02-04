@@ -10,11 +10,6 @@ on:
           required: true
           default: "true"
           type: boolean
-        ARTIFACT_CONFIG:
-          description: 'Upload to Actions'
-          required: true
-          default: "false"
-          type: boolean
         DEVICE_NAME:
           description: 'Device Name'
           required: true
@@ -165,7 +160,7 @@ jobs:
           fi
 
       - name: Upload Artifact
-        if: github.event.inputs.ARTIFACT_CONFIG == 'true'
+        if: github.event.inputs.RELEASE_CONFIG == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.inputs.DEVICE_NAME }}-PixelOS-Inline-${{ steps.current-time.outputs.formattedTime }}
