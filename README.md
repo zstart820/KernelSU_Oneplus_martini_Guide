@@ -22,7 +22,7 @@ Fork this repository and run workflows by yourselves.
 
 ![Github Action](https://user-images.githubusercontent.com/64072399/213983210-c04ecdee-4f65-4854-a854-42ee587508a4.png)
 
-If you get this notice when you try to upload to releases,please go to settings-actions-General,set Workflow permissions as 'Read and write permissions'.
+If you get this notice when you try to upload to releases,please go to `settings`-`actions`-`General`,set Workflow permissions as 'Read and write permissions'.
 
 ```
 Run ncipollo/release-action@v1
