@@ -45,6 +45,7 @@ setup_environment() {
 setup_kernelsu() {
     cd $KERNEL_PATH
     curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+    # Enable KPROBES
     grep -q "CONFIG_MODULES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
     grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
     grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
@@ -54,12 +55,15 @@ setup_kernelsu() {
 build_kernel() {
     cd $KERNEL_PATH
     make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_CONFIG
+    # Disable LTO
     sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' out/.config
     sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/' out/.config
     sed -i 's/CONFIG_THINLTO=y/CONFIG_THINLTO=n/' out/.config
     echo "CONFIG_LTO_NONE=y" >> out/.config
+    # Delete old files
     test -d $KERNEL_PATH/out/arch/arm64/boot && rm -rf $KERNEL_PATH/out/arch/arm64/boot/*
-    make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 -j`nproc` CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld 2>&1 | tee kernel.log
+    # Begin compile
+    time make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 -j`nproc` CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld 2>&1 | tee kernel.log
 }
 
 repack_vendor_dlkm() {
@@ -71,8 +75,11 @@ repack_vendor_dlkm() {
     cd $GITHUB_WORKSPACE/repacker
     test -d vendor_dlkm && rm -rf vendor_dlkm
     cp -r $GITHUB_WORKSPACE/$ROM_DLKM $GITHUB_WORKSPACE/repacker/vendor_dlkm
+    # Copy *.ko files from out/
     find $KERNEL_PATH/out/ -name "*.ko" -exec cp \{\} $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/ \;
+    # Rename wlan module
     mv $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/wlan.ko $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/qca_cld3_wlan.ko
+    # Repack vendor_dlkm.img now
     sudo bash ./repack_dlkm.sh vendor_dlkm
     mv ./vendor_dlkm-ext4.img $KERNEL_PATH/out/arch/arm64/boot/vendor_dlkm.img
 }
@@ -84,6 +91,7 @@ make_anykernel3_zip() {
        cd $KERNEL_PATH/AnyKernel3
        cp $KERNEL_PATH/out/arch/arm64/boot/Image $KERNEL_PATH/AnyKernel3
        zip -r Kernel-op9rt.zip *
+       # Sign zip file
        java -jar ./tools/zipsigner.jar ./Kernel-op9rt.zip ./Kernel-op9rt-signed.zip
        rm ./Kernel-op9rt.zip ./Image
        mv ./Kernel-op9rt-signed.zip $KERNEL_PATH/out/arch/arm64/boot
