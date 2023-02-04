@@ -19,6 +19,7 @@ I have made the [original repository](https://github.com/natsumerinchan/KernelSU
 ## How to build
 ### 1.Github Action
 Fork this repository and run workflows by yourselves.
+If you can not found Actions tab,please go to `settings`-`actions`-`General`,set Actions permissions as 'Allow all actions and reusable workflows'
 
 ![Github Action](https://user-images.githubusercontent.com/64072399/216762170-8cce9b81-7dc1-4e7d-a774-b05f281a9bff.png)
 
@@ -40,6 +41,7 @@ Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_O
 
 ## Instructions
 ### 1.How to Install
+- 0.Download and install [KernelSU Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml).Install branches other than `main` is not recommended, because they may not work properly. 
 - 1.Extract Oneplus-9RT-*.zip
 - 2.Download [platform-tools](https://developer.android.com/studio/releases/platform-tools) (Don't install from Ubuntu20.04 source.)
 - 3.Reboot to fastbootd mode(not bootloader),flash "vendor_dlkm.img"(If exist.)
