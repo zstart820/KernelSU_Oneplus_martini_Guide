@@ -20,7 +20,7 @@
 
 ## 如何编译
 ### 1.Github Action
-Fork这个仓库并在Action运行工作流
+Fork这个仓库并在Action运行工作流。
 如果你没看到Action这个标签栏,请到`settings`-`actions`-`General`把Actions permissions设置为'Allow all actions and reusable workflows'
 
 ![Github Action](https://user-images.githubusercontent.com/64072399/216762170-8cce9b81-7dc1-4e7d-a774-b05f281a9bff.png)
