@@ -1,12 +1,14 @@
+[ **简体中文** ](README_zh_cn.md) || **English** 
+
 # KernelSU_Oneplus_martini_Guide
 Guide of compile KernelSU for Oneplus 9RT(martini)[MT2110/MT2111]
 
 I have made the [original repository](https://github.com/natsumerinchan/KernelSU_Oneplus_9RT_Action.git) private.
 
 ## Warning:warning: :warning: :warning:
-- 1.Please backup the offical boot.img and vendor_dlkm.img before you flash!!!You can use [ssut/payload-dumper-go](https://github.com/ssut/payload-dumper-go.git) to extract them from `payload.bin` in ROM.zip.
-- 2.I am not the author of the kernel, so I will not release any compiled products in this repository, please fork this repository (Sync to your private repository is better) and run workflow by yourself.
-- 3."If you are not a kernel author and use someone else's source code to build KernelSU, please use it for your own use only and do not share it with others, it is respectful to the author." --[xiaoleGun/KernelSU_Action](https://github.com/xiaoleGun/KernelSU_Action.git) (I will create a Private repository to compile for me.)
+- 1.Please backup the offical boot.img and vendor_dlkm.img before you flash!!!You can use [ssut/payload-dumper-go](https://github.com/ssut/payload-dumper-go.git) to extract them from `payload.bin` in ROM.zip.(The ROM package version must same as your using OS.)
+- 2.I am not the author of these kernel, so I will not release any compiled products in this repository, please fork this repository (Sync to your private repository is better) and run workflow by yourself.
+- 3."If you are not a kernel author and use someone else's source code to build KernelSU, please use it for your own use only and do not share it with others, it is respectful to the author." --[xiaoleGun/KernelSU_Action](https://github.com/xiaoleGun/KernelSU_Action.git) (I have create a Private repository to compile for me.)
 
 ## Support ROMS
 
@@ -23,12 +25,11 @@ If you can not found Actions tab,please go to `settings`-`actions`-`General`,set
 
 ![Github Action](https://user-images.githubusercontent.com/64072399/216762170-8cce9b81-7dc1-4e7d-a774-b05f281a9bff.png)
 
-If you get this notice when you try to upload to releases,please go to `settings`-`actions`-`General`,set Workflow permissions as 'Read and write permissions'.
-
 ```
 Run ncipollo/release-action@v1
 Error: Error 403: Resource not accessible by integration
 ```
+If you get this notice when you try to upload to releases,please go to `settings`-`actions`-`General`,set Workflow permissions as 'Read and write permissions'.
 
 ### 2.Build on your PC
 Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_Oneplus_martini_Guide/main/local_build.sh) into the kernel source,modify and run it.
@@ -41,8 +42,7 @@ Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_O
 
 ## Instructions
 ### 1.How to Install
-- 0.Download and install [KernelSU Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml).Install branches other than `main` is not recommended, because they may not work properly. 
-- 1.Extract Oneplus-9RT-*.zip
+- 1.Download and install [KernelSU Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml).Install branches other than `main` is not recommended, because they may not work properly. 
 - 2.Download [platform-tools](https://developer.android.com/studio/releases/platform-tools) (Don't install from Ubuntu20.04 source.)
 - 3.Reboot to fastbootd mode(not bootloader),flash "vendor_dlkm.img"(If exist.)
 ```
