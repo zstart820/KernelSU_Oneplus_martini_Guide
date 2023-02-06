@@ -73,6 +73,25 @@ fastboot reboot fastboot
 fastboot flash vendor_dlkm ./vendor_dlkm.img
 ```
 
+### 4.如何将更新同步到你的私有仓库
+使用Github Desktop将你的私有仓库克隆到本地，然后进入目录并打开终端。
+
+```
+// 将主线分支同步到仓库
+
+git remote add Celica https://github.com/natsumerinchan/KernelSU_Oneplus_martini_Guide.git //仅在第一次更新时需要这一步
+
+git fetch Celica main
+```
+
+```
+// 从主线仓库cherry-pick提交到你的私有仓库
+
+git cherry-pick <commit id>
+```
+
+再用Github Desktop将提交上传到Github
+
 ## Credits and Thanks
 * [tiann/KernelSU](https://github.com/tiann/KernelSU.git): A Kernel based root solution for Android GKI
 * [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git): PixelOS kernel for OnePlus 9RT 5G (martini)

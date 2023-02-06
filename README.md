@@ -73,6 +73,25 @@ fastboot reboot fastboot
 fastboot flash vendor_dlkm ./vendor_dlkm.img
 ```
 
+### 4.How to sync updates to your private repository
+Use Github Desktop to clone your private repository to local, then go to the directory and open a terminal.
+
+```
+// Sync mainline branch to the repository
+
+git remote add Celica https://github.com/natsumerinchan/KernelSU_Oneplus_martini_Guide.git //This step is only required for the first time update.
+
+git fetch Celica main
+```
+
+```
+// Cherry-pick commit from the mainline repository to your private one.
+
+git cherry-pick <commit id>
+```
+
+Then use Github Desktop to upload the commit to Github
+
 ## Credits and Thanks
 * [tiann/KernelSU](https://github.com/tiann/KernelSU.git): A Kernel based root solution for Android GKI
 * [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git): PixelOS kernel for OnePlus 9RT 5G (martini)
