@@ -90,7 +90,7 @@ git fetch Celica main
 git cherry-pick <commit id>
 ```
 
-Then use Github Desktop to upload the commit to Github
+Then use Github Desktop to upload commits to Github
 
 ## Credits and Thanks
 * [tiann/KernelSU](https://github.com/tiann/KernelSU.git): A Kernel based root solution for Android GKI
