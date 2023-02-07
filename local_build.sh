@@ -4,7 +4,7 @@ set -eux
 
 setup_export() {
     export KERNEL_PATH=$PWD
-    export CLANG_PATH=~/proton-clang
+    export CLANG_PATH=~/toolchains/proton-clang
     export PATH=${CLANG_PATH}/bin:${PATH}
     export CLANG_TRIPLE=aarch64-linux-gnu-
     export ARCH=arm64
