@@ -15,7 +15,6 @@ I have made the [original repository](https://github.com/natsumerinchan/KernelSU
 | Action Name | Kernel source | Used Branch | Kernel Author | Notes |
 |:--:|:--:|:--:|:--:|:--:|
 | Pixel Experience | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | Need flash vendor_dlkm.img.Should use OOS13-based version. |
-| ~~Pixel OS~~（Abandoned） | ~~[bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git)~~ | ~~thirteen~~ | ~~[bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git)~~ | ~~Need flash vendor_dlkm.img.Should use OOS13-based version.~~ |
 | Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen-wip-albert | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | Have been inlined all modules.Needn't flash vendor_dlkm.img.Theoretical support for all AOSP13-based third-party ROMs.Unsupport OOS and ColorOS. |
 
 ## How to build
