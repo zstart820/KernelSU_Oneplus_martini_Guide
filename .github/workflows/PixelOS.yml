@@ -28,7 +28,7 @@ on:
         KERNEL_SOURCE_BRANCH:
           description: 'kernel Branch'
           required: true
-          default: "thirteen"
+          default: "thirteen-base"
           type: string
         KERNEL_CONFIG:
           description: 'Kernel Config'
