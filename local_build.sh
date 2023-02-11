@@ -13,7 +13,7 @@ setup_export() {
     export LLVM_VERSION=13
     export ROM_DLKM=pixelos_dlkm
     export SETUP_KERNELSU=true
-    export REPACK_DLKM=false
+    export REPACK_DLKM=true
 }
 
 update_kernel() {
@@ -119,7 +119,7 @@ fi
 
 build_kernel
 
-if test [ "$REPACK_DLKM" == "true" ] || [ "$ROM_DLKM" == "pe_dlkm" ]; then
+if test "$REPACK_DLKM" == "true"; then
    repack_vendor_dlkm
 fi
 
