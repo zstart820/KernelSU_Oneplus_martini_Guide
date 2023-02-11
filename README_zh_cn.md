@@ -15,6 +15,7 @@
 | 工作流名称 | 源码地址 | 分支 | 内核作者 | 备注 |
 |:--:|:--:|:--:|:--:|:--:|
 | Pixel Experience | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | 需要刷入vendor_dlkm.img。必须使用基于OOS-13的PE版本。 |
+| Pixel OS | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen-base | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | 需要刷入vendor_dlkm.img。必须使用基于OOS-13的PixelOS版本。 |
 | Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | 已內联所有内核模块.不需要刷入vendor_dlkm.img.理论上支持所有基于AOSP-13的类原生ROM。不支持ColorOS和OOS。 |
 
 ## 如何编译
