@@ -13,7 +13,7 @@ setup_export() {
     export LLVM_VERSION=13
     export ROM_DLKM=pixelos_dlkm
     export SETUP_KERNELSU=true
-    export REPACK_DLKM=true
+    export REPACK_DLKM=false
 }
 
 update_kernel() {
