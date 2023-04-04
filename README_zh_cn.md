@@ -15,7 +15,8 @@
 | 工作流名称 | 源码地址 | 分支 | 内核作者 | 备注 |
 |:--:|:--:|:--:|:--:|:--:|
 | Pixel Experience Inline | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | 不支持ColorOS和OOS。 |
-| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | 不支持ColorOS和OOS。 |
+| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy) | 不支持ColorOS和OOS。 |
+| Eva Kernel | [mvaisakh/oneplus9pro](https://github.com/mvaisakh/oneplus9pro.git) | main | [mvaisakh](https://github.com/mvaisakh) | 不支持ColorOS和OOS。推荐。 |
 
 ## 如何编译
 ### 1.Github Action
@@ -96,6 +97,7 @@ git cherry-pick <commit id>
 * [tiann/KernelSU](https://github.com/tiann/KernelSU.git): A Kernel based root solution for Android GKI
 * [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git): PixelOS kernel for OnePlus 9RT 5G (martini)
 * [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git): Pixel Experience kernel for OnePlus 9RT (martini)
+* [mvaisakh/oneplus9pro](https://github.com/mvaisakh/oneplus9pro.git): Custom Linux Kernel for OnePlus 9 Series.
 * [Gainss/Action_Kernel](https://github.com/Gainss/Action_Kernel.git): Kernel Action template
 * [xiaoleGun/KernelSU_action](https://github.com/xiaoleGun/KernelSU_action.git): Action for Non-GKI Kernel has some common and requires knowledge of kernel and Android to be used.
 * [osm0sis/AnyKernel3](https://github.com/osm0sis/AnyKernel3.git): Flashable Zip Template for Kernel Releases with Ramdisk Modifications

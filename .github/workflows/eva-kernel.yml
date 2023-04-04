@@ -1,0 +1,84 @@
+name: Eva Kernel
+
+
+on:
+  workflow_dispatch:
+      inputs:
+        RELEASE_CONFIG:
+          description: 'Upload to Releases'
+          required: true
+          default: "true"
+          type: boolean
+        KERNELSU_CONFIG:
+          description: 'Compile KernelSU'
+          required: true
+          default: "true"
+          type: boolean
+jobs:
+
+  build-martini-clang:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Setup repo
+      run: sudo apt update -y && sudo apt install -y repo elfutils libarchive-tools
+    - name: Repo sync
+      run: |
+        repo init -u https://github.com/mvaisakh/android_kernel_manifest -b eva-oneplus-5.4 --depth=1
+        repo sync --no-tags --no-clone-bundle -j$(nproc --all)
+        echo "TAG_NAME=$(date -u +%d%m%Y%I%M)" >> $GITHUB_ENV
+    - name: Sync Clang
+      run: |
+        mkdir -p prebuilts-master/clang/host/linux-x86/clang-r450784d/
+        cd prebuilts-master/clang/host/linux-x86/clang-r450784d/
+        curl -LO "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman"
+        bash antman -S=latest
+        bash antman --patch=glibc
+    - name: Setup KernelSU
+      if: github.event.inputs.KERNELSU_CONFIG == 'true'
+      run: |
+        cd $GITHUB_WORKSPACE/kernel/msm-5.4
+        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+        wget https://gist.githubusercontent.com/natsumerinchan/cebf0d64ea10a5deecec74fb7803d72a/raw/f9b6539e81ec6e97792f16c4a68b25752e43ba47/0001-kallsyms-strip-LTO-suffixes-from-static-functions.patch
+        git apply ./0001-kallsyms-strip-LTO-suffixes-from-static-functions.patch
+        about_kprobe="
+        CONFIG_MODULES=y
+        CONFIG_KPROBES=y
+        CONFIG_HAVE_KPROBES=y
+        CONFIG_TRACING_SUPPORT=y
+        CONFIG_FTRACE=y
+        CONFIG_HAVE_REGS_AND_STACK_ACCESS_API=y
+        CONFIG_KPROBE_EVENTS=y
+        "
+        for config_name in $about_kprobe
+        do
+          printf "\n$config_name\n" >> "arch/arm64/configs/vendor/lahaina_NQGKI.config"
+        done
+    - name: Clang Build
+      run: |
+        sed -i s/build-user/mvaisakh/g build/_setup_env.sh
+        sed -i s/build-host/statixos/g build/_setup_env.sh
+        BUILD_CONFIG=kernel/msm-5.4/build.config.msm.lahaina VARIANT=nqgki DEVICE=9RT LTO=thin BUILD_KERNEL=1 build/build.sh
+    - name: Create zip
+      run: |
+        cp out/msm-5.4-lahaina-nqgki/dist/Image ak3/
+        cat out/msm-5.4-lahaina-nqgki/dist/*.dtb > ak3/dtb
+        cp out/msm-5.4-lahaina-nqgki/dist/dtbo.img ak3/
+        cd ak3/ && zip -r9 eva-martini-${{ env.TAG_NAME }}-clang.zip * -x .git README.md ./*/placeholder
+        cd ../
+    - uses: actions/upload-artifact@main
+      if: github.event.inputs.RELEASE_CONFIG != 'true'
+      with:
+       name: release-zip
+       path: ak3/*.zip
+    - name: Upload to Release
+      if: github.event.inputs.RELEASE_CONFIG == 'true'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "ak3/*.zip"
+        tag: "eva-martini-${{ env.TAG_NAME }}"
+        name: "eva-martini-${{ env.TAG_NAME }}"
+        allowUpdates: true
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}  
