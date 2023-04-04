@@ -14,8 +14,8 @@ I have made the [original repository](https://github.com/natsumerinchan/KernelSU
 
 | Action Name | Kernel source | Used Branch | Kernel Author | Notes |
 |:--:|:--:|:--:|:--:|:--:|
-| Pixel Experience | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | Need flash vendor_dlkm.img.Should use OOS13-based version. |
-| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | Have been inlined all modules.Needn't flash vendor_dlkm.img.Theoretical support for all AOSP13-based third-party ROMs.Unsupport OOS and ColorOS. |
+| Pixel Experience Inline | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | Unsupport OOS and ColorOS. |
+| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | Unsupport OOS and ColorOS. |
 
 ## How to build
 ### 1.Github Action
@@ -43,14 +43,14 @@ Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_O
 ### 1.How to Install
 - 1.Download and install [KernelSU Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml).Install branches other than `main` is not recommended, because they may not work properly. 
 - 2.Download [platform-tools](https://developer.android.com/studio/releases/platform-tools) (Don't install from Ubuntu20.04 source.)
-- 3.Reboot to fastbootd mode(not bootloader),flash "vendor_dlkm.img"(If exist.)
+<!-- - 3.Reboot to fastbootd mode(not bootloader),flash "vendor_dlkm.img"(If exist.)
 ```
 adb reboot fastboot
 fastboot flash vendor_dlkm ./vendor_dlkm.img
+``` -->
+- 3.Reboot to Recovery Sideload mode,flash "Kernel-op9rt-signed.zip"
 ```
-- 4.Reboot to Recovery mode,flash "Kernel-op9rt-signed.zip"
-```
-fastboot reboot recovery
+adb reboot sideload
 adb sideload ./Kernel-op9rt-signed.zip
 ```
 
@@ -59,7 +59,7 @@ You may encounter the fastbootd or recovery mode can not connect to the PC, plea
 ```
 adb reboot bootloader
 fastboot flash boot ./boot.img
-fastboot reboot fastboot
+fastboot reboot recovery
 ```
 Now you can continue to update.
 
@@ -68,9 +68,10 @@ Please reflash the offical boot.img and vendor_dlkm.img
 ```
 adb reboot bootloader
 fastboot flash boot ./boot.img
-fastboot reboot fastboot
-fastboot flash vendor_dlkm ./vendor_dlkm.img
 ```
+<!-- fastboot reboot fastboot
+fastboot flash vendor_dlkm ./vendor_dlkm.img
+``` -->
 
 ### 4.How to sync updates to your private repository
 Use Github Desktop to clone your private repository to local, then go to the directory and open a terminal.

@@ -14,8 +14,8 @@
 
 | 工作流名称 | 源码地址 | 分支 | 内核作者 | 备注 |
 |:--:|:--:|:--:|:--:|:--:|
-| Pixel Experience | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | 需要刷入vendor_dlkm.img。必须使用基于OOS-13的PE版本。 |
-| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | 已內联所有内核模块.不需要刷入vendor_dlkm.img.理论上支持所有基于AOSP-13的类原生ROM。不支持ColorOS和OOS。 |
+| Pixel Experience Inline | [PixelExperience-Devices/kernel_oneplus_martini](https://github.com/PixelExperience-Devices/kernel_oneplus_martini.git) | thirteen | [inferno0230](https://github.com/inferno0230) | 不支持ColorOS和OOS。 |
+| Pixel OS Inline | [bheatleyyy/kernel_oplus_sm8350](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | thirteen | [bheatleyyy](https://github.com/bheatleyyy/kernel_oplus_sm8350.git) | 不支持ColorOS和OOS。 |
 
 ## 如何编译
 ### 1.Github Action
@@ -43,14 +43,14 @@ Error: Error 403: Resource not accessible by integration
 ### 1.如何刷入
 - 1.下载并安装 [KernelSU Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml)。不建议安装除了`main`以外的分支，因为它们可能无法正常工作。 
 - 2.下载 [platform-tools](https://developer.android.com/studio/releases/platform-tools) (不要从Ubuntu 20.04源安装)
-- 3.重启到fastbootd(而不是bootloader),刷入"vendor_dlkm.img"(如果有)
+<!-- - 3.重启到fastbootd(而不是bootloader),刷入"vendor_dlkm.img"(如果有)
 ```
 adb reboot fastboot
 fastboot flash vendor_dlkm ./vendor_dlkm.img
+``` -->
+- 3.重启到Recovery Sideload模式,刷入"Kernel-op9rt-signed.zip"
 ```
-- 4.重启到Recovery,刷入"Kernel-op9rt-signed.zip"
-```
-fastboot reboot recovery
+adb reboot sideload
 adb sideload ./Kernel-op9rt-signed.zip
 ```
 
@@ -59,7 +59,7 @@ adb sideload ./Kernel-op9rt-signed.zip
 ```
 adb reboot bootloader
 fastboot flash boot ./boot.img
-fastboot reboot fastboot
+fastboot reboot recovery
 ```
 现在你可以继续更新了
 
@@ -68,9 +68,10 @@ fastboot reboot fastboot
 ```
 adb reboot bootloader
 fastboot flash boot ./boot.img
-fastboot reboot fastboot
-fastboot flash vendor_dlkm ./vendor_dlkm.img
 ```
+<!-- fastboot reboot fastboot
+fastboot flash vendor_dlkm ./vendor_dlkm.img
+``` -->
 
 ### 4.如何将更新同步到你的私有仓库
 使用Github Desktop将你的私有仓库克隆到本地，然后进入目录并打开终端。
