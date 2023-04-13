@@ -14,6 +14,12 @@ on:
           required: true
           default: "true"
           type: boolean
+        KERNELSU_TAG:
+          description: 'Choose KernelSU branch or tag'
+          required: false
+          default: "main"
+          type: string
+
 jobs:
 
   build-martini-clang:
@@ -39,7 +45,7 @@ jobs:
       if: github.event.inputs.KERNELSU_CONFIG == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel/msm-5.4
-        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s "${{ github.event.inputs.KERNELSU_TAG }}"
         wget https://gist.githubusercontent.com/natsumerinchan/cebf0d64ea10a5deecec74fb7803d72a/raw/f9b6539e81ec6e97792f16c4a68b25752e43ba47/0001-kallsyms-strip-LTO-suffixes-from-static-functions.patch
         git apply ./0001-kallsyms-strip-LTO-suffixes-from-static-functions.patch
         about_kprobe="
@@ -77,8 +83,8 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: "ak3/*.zip"
-        tag: "eva-martini-${{ env.TAG_NAME }}"
-        name: "eva-martini-${{ env.TAG_NAME }}"
+        tag: "Eva-martini-${{ env.TAG_NAME }}"
+        name: "Eva-martini-${{ env.TAG_NAME }}"
         allowUpdates: true
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}  

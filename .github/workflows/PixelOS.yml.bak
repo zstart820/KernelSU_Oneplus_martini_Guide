@@ -10,16 +10,6 @@ on:
           required: true
           default: "true"
           type: boolean
-        DEVICE_NAME:
-          description: 'Device Name'
-          required: true
-          default: "Oneplus-9RT"
-          type: string
-        ZIP_NAME:
-          description: 'Name of the ZIP file'
-          required: true
-          default: "Kernel-op9rt-signed"
-          type: string
         KERNEL_SOURCE:
           description: 'Kernel Source'
           required: true
@@ -30,7 +20,7 @@ on:
           required: true
           default: "thirteen"
           type: string
-        KERNEL_CONFIG:
+        KERNEL_DEFCONFIG:
           description: 'Kernel Config'
           required: true
           default: "vendor/lahaina-qgki_defconfig"
@@ -55,6 +45,11 @@ on:
           required: true
           default: "true"
           type: boolean
+        KERNELSU_TAG:
+          description: 'Choose KernelSU branch or tag'
+          required: false
+          default: "main"
+          type: string
           
 jobs:
 
@@ -102,19 +97,13 @@ jobs:
       - name: Git kernel
         run: |
           git clone "${{ github.event.inputs.KERNEL_SOURCE }}" -b "${{ github.event.inputs.KERNEL_SOURCE_BRANCH }}" kernel
-
-      - name: Get current time
-        uses: josStorer/get-current-time@v2.0.2
-        id: current-time
-        with:
-          format: YYYYMMDD-HHmmss
-          utcOffset: "+08:00"
+          echo "TAG_NAME=$(date -u +%d%m%Y%I%M)" >> $GITHUB_ENV
 
       - name: Setup KernelSU
         if: github.event.inputs.KERNELSU_CONFIG == 'true'
         run: |
           cd $GITHUB_WORKSPACE/kernel
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s "${{ github.event.inputs.KERNELSU_TAG }}"
           grep -q "CONFIG_MODULES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
           grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
           grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
@@ -123,7 +112,7 @@ jobs:
       - name: Make kernel
         run: |
           cd $GITHUB_WORKSPACE/kernel
-          export KERNEL_CONFIG=${{ github.event.inputs.KERNEL_CONFIG }}
+          export KERNEL_DEFCONFIG=${{ github.event.inputs.KERNEL_DEFCONFIG }}
           echo "===================Setup Export========================="
           export KERNEL_PATH=$PWD
           export CLANG_PATH=~/proton-clang
@@ -135,7 +124,7 @@ jobs:
           test -e "$CLANG_PATH/README.md" || git clone --depth=1 https://github.com/kdrag0n/proton-clang $CLANG_PATH
           sudo apt install --fix-missing
           echo "=========================Make=========================="
-          make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_CONFIG
+          make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_DEFCONFIG
           sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' out/.config
           sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/' out/.config
           sed -i 's/CONFIG_THINLTO=y/CONFIG_THINLTO=n/' out/.config
@@ -147,7 +136,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/kernel
           export KERNEL_PATH=$PWD
-          export ZIP_NAME=${{ github.event.inputs.ZIP_NAME }}
           export ANYKERNEL3_SOURCE=${{ github.event.inputs.ANYKERNEL3_SOURCE }}
           export ANYKERNEL3_SOURCE_BRANCH=${{ github.event.inputs.ANYKERNEL3_SOURCE_BRANCH }}
           git clone -b $ANYKERNEL3_SOURCE_BRANCH $ANYKERNEL3_SOURCE AnyKernel3
@@ -156,7 +144,7 @@ jobs:
           if test -e ./Image; then
              zip -r Kernel.zip *
              test -e ./tools/zipsigner.jar || wget -O ./tools/zipsigner.jar https://forum.xda-developers.com/attachments/zipsigner-3-0-jar.4586999/
-             java -jar ./tools/zipsigner.jar ./Kernel.zip ./$ZIP_NAME.zip
+             java -jar ./tools/zipsigner.jar ./Kernel.zip ./PixelOS-martini-${{ env.TAG_NAME }}.zip
           fi
 
       - name: Repack vendor_dlkm.img
@@ -175,18 +163,18 @@ jobs:
         if: github.event.inputs.RELEASE_CONFIG == 'false'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.DEVICE_NAME }}-PixelOS-${{ steps.current-time.outputs.formattedTime }}
+          name: PixelOS-martini-${{ env.TAG_NAME }}
           path: |
-            kernel/AnyKernel3/${{ github.event.inputs.ZIP_NAME }}.zip
+            kernel/AnyKernel3/PixelOS-martini-${{ env.TAG_NAME }}.zip
             kernel/repacker/vendor_dlkm.img
 
       - name: Upload to Release
         if: github.event.inputs.RELEASE_CONFIG == 'true'
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "kernel/AnyKernel3/${{ github.event.inputs.ZIP_NAME }}.zip,kernel/repacker/vendor_dlkm.img"
-          tag: "${{ github.event.inputs.DEVICE_NAME }}-PixelOS"
-          name: "${{ github.event.inputs.DEVICE_NAME }}-PixelOS-${{ steps.current-time.outputs.formattedTime }}"
+          artifacts: "kernel/AnyKernel3/PixelOS-martini-${{ env.TAG_NAME }}.zip,kernel/repacker/vendor_dlkm.img"
+          tag: "PixelOS-martini-${{ env.TAG_NAME }}"
+          name: "PixelOS-martini-${{ env.TAG_NAME }}"
           allowUpdates: true
           replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
