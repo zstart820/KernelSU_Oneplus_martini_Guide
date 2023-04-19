@@ -19,6 +19,11 @@ on:
           required: false
           default: "main"
           type: string
+        CCACHE_CONFIG:
+          description: 'Use Ccache'
+          required: true
+          default: "true"
+          type: boolean
 
 jobs:
 
@@ -61,11 +66,24 @@ jobs:
         do
           printf "\n$config_name\n" >> "arch/arm64/configs/vendor/lahaina_NQGKI.config"
         done
+    - name: Setup ccache
+      if: github.event.inputs.CCACHE_CONFIG == 'true'
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: eva-martini-clang
+        max-size: 2G
+        save: true
+    - name: Apply ccache patch
+      if: github.event.inputs.CCACHE_CONFIG == 'true'
+      run: |
+        cd $GITHUB_WORKSPACE/kernel/msm-5.4
+        wget https://gist.githubusercontent.com/natsumerinchan/77d5ad9ea42b5a1b4667de9f54c69d8e/raw/03cbe567e798cef5261f551668310067a878ffef/0003-Makefile-Use-CCACHE-for-faster-compilation.patch
+        git apply ./0003-Makefile-Use-CCACHE-for-faster-compilation.patch
     - name: Clang Build
       run: |
         sed -i s/build-user/mvaisakh/g build/_setup_env.sh
         sed -i s/build-host/statixos/g build/_setup_env.sh
-        BUILD_CONFIG=kernel/msm-5.4/build.config.msm.lahaina VARIANT=nqgki DEVICE=9RT LTO=thin BUILD_KERNEL=1 build/build.sh
+        CCACHE="/usr/bin/ccache" BUILD_CONFIG=kernel/msm-5.4/build.config.msm.lahaina VARIANT=nqgki DEVICE=9RT LTO=thin POLLY=1 BUILD_KERNEL=1 build/build.sh
     - name: Create zip
       run: |
         cp out/msm-5.4-lahaina-nqgki/dist/Image ak3/
