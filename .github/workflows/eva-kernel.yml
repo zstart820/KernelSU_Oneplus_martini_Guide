@@ -83,7 +83,7 @@ jobs:
       run: |
         sed -i s/build-user/mvaisakh/g build/_setup_env.sh
         sed -i s/build-host/statixos/g build/_setup_env.sh
-        CCACHE="/usr/bin/ccache" BUILD_CONFIG=kernel/msm-5.4/build.config.msm.lahaina VARIANT=nqgki DEVICE=9RT LTO=full POLLY=1 BUILD_KERNEL=1 build/build.sh
+        CCACHE="/usr/bin/ccache" BUILD_CONFIG=kernel/msm-5.4/build.config.msm.lahaina VARIANT=nqgki DEVICE=9RT LTO=thin POLLY=1 BUILD_KERNEL=1 build/build.sh
     - name: Create zip
       run: |
         cp out/msm-5.4-lahaina-nqgki/dist/Image ak3/
