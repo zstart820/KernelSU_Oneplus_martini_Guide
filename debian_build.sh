@@ -4,16 +4,14 @@ set -eux
 
 setup_export() {
     export KERNEL_PATH=$PWD
-    export CLANG_PATH=~/toolchains/proton-clang
+    export CLANG_PATH=~/toolchains/neutron-clang
     export PATH=${CLANG_PATH}/bin:${PATH}
     export CLANG_TRIPLE=aarch64-linux-gnu-
     export ARCH=arm64
     export SUBARCH=arm64
     export KERNEL_CONFIG=vendor/lahaina-qgki_defconfig
-    export LLVM_VERSION=13
-    export ROM_DLKM=pixelos_dlkm
+    export LLVM_VERSION=17
     export SETUP_KERNELSU=true
-    export REPACK_DLKM=false
 }
 
 update_kernel() {
@@ -24,9 +22,15 @@ update_kernel() {
 
 setup_environment() {
     cd $KERNEL_PATH
-    test -d $CLANG_PATH || git clone --depth=1 https://github.com/kdrag0n/proton-clang $CLANG_PATH
-    sh -c "$(curl -sSL https://github.com/akhilnarang/scripts/raw/master/setup/android_build_env.sh/)"
-    wget https://apt.llvm.org/llvm.sh
+    sudo apt update
+    sudo apt install zstd tar wget curl
+    if [ ! -d $CLANG_PATH ]; then
+      mkdir -p $CLANG_PATH
+      cd $CLANG_PATH
+      curl -LO "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman"
+      bash antman -S=latest
+      bash antman --patch=glibc
+    fi
     chmod +x llvm.sh
     sudo ./llvm.sh $LLVM_VERSION
     rm ./llvm.sh
@@ -66,24 +70,6 @@ build_kernel() {
     time make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 -j`nproc` CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld 2>&1 | tee kernel.log
 }
 
-repack_vendor_dlkm() {
-    cd $KERNEL_PATH
-    test -d Guide || git clone -b main https://github.com/natsumerinchan/KernelSU_Oneplus_martini_Guide.git Guide
-    cd Guide
-    export GITHUB_WORKSPACE=$PWD
-    test -d repacker || git clone -b main https://github.com/natsumerinchan/vendor_dlkm_repacker.git repacker
-    cd $GITHUB_WORKSPACE/repacker
-    test -d vendor_dlkm && rm -rf vendor_dlkm
-    cp -r $GITHUB_WORKSPACE/$ROM_DLKM $GITHUB_WORKSPACE/repacker/vendor_dlkm
-    # Copy *.ko files from out/
-    find $KERNEL_PATH/out/ -name "*.ko" -exec cp \{\} $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/ \;
-    # Rename wlan module
-    mv $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/wlan.ko $GITHUB_WORKSPACE/repacker/vendor_dlkm/lib/modules/qca_cld3_wlan.ko
-    # Repack vendor_dlkm.img now
-    sudo bash ./repack_dlkm.sh vendor_dlkm
-    mv ./vendor_dlkm-ext4.img $KERNEL_PATH/out/arch/arm64/boot/vendor_dlkm.img
-}
-
 make_anykernel3_zip() {
     cd $KERNEL_PATH
     test -d $KERNEL_PATH/AnyKernel3 || git clone -b martini https://github.com/natsumerinchan/AnyKernel3-op9rt.git AnyKernel3
@@ -118,10 +104,6 @@ else
 fi
 
 build_kernel
-
-if test "$REPACK_DLKM" == "true"; then
-   repack_vendor_dlkm
-fi
 
 make_anykernel3_zip
 cd $KERNEL_PATH

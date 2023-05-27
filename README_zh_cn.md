@@ -32,13 +32,13 @@ Error: Error 403: Resource not accessible by integration
 如果你在尝试上传到Release时看到这个报错,请到 `settings`-`actions`-`General`把 Workflow permissions设置为'Read and write permissions'.
 
 ### 2.在电脑上编译
-将[local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_Oneplus_martini_Guide/main/local_build.sh)复制到内核源代码根目录，修改并运行它。
 
-- `export ROM_DLKM=pe_dlkm` (它可以被设置为`pe_dlkm`或`pixelos_dlkm`,取决于你想为哪个ROM构建内核)
+`debian_build.sh` :用于Debian系发行版(如Debian,Ubuntu等)
+
+`arch_build.sh` :用于Arch系发行版(如Arch Linux,Manjaro等)
+
 
 - `export SETUP_KERNELSU=true` (如果你不想把KernelSU集成进内核，请把它设置为`false`)
-
-- `export REPACK_DLKM=true` (取决于你是否需要重新打包vendor_dlkm.img)
 
 ## 食用指南
 ### 1.如何刷入

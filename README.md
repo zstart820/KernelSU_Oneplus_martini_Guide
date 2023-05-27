@@ -32,13 +32,12 @@ Error: Error 403: Resource not accessible by integration
 If you get this notice when you try to upload to releases,please go to `settings`-`actions`-`General`,set Workflow permissions as 'Read and write permissions'.
 
 ### 2.Build on your PC
-Put [local_build.sh](https://raw.githubusercontent.com/natsumerinchan/KernelSU_Oneplus_martini_Guide/main/local_build.sh) into the kernel source,modify and run it.
 
-- `export ROM_DLKM=pe_dlkm` (It can be `pe_dlkm` or `pixelos_dlkm`,it depends on which rom you want to build for)
+`debian_build.sh` :for Debian distributions (e.g. Debian, Ubuntu, etc.)
+
+`arch_build.sh` :for Arch distributions (e.g. Arch Linux, Manjaro, etc.)
 
 - `export SETUP_KERNELSU=true` (If you don't want to compile KernelSU,please set it as `false`)
-
-- `export REPACK_DLKM=true` (It determines whether you want to repack vendor_dlkm.img)
 
 ## Instructions
 ### 1.How to Install
