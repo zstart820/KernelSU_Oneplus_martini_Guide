@@ -62,7 +62,6 @@ jobs:
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
 
-      
     steps:
 
       - uses: actions/checkout@v3
@@ -75,25 +74,13 @@ jobs:
 
       - name: Setup Environment
         run: |
-          export CLANG_PATH=~/proton-clang
-          git clone --depth=1 https://github.com/kdrag0n/proton-clang $CLANG_PATH
-          sh -c "$(curl -sSL https://raw.githubusercontent.com/akhilnarang/scripts/master/setup/android_build_env.sh)"
-          sudo apt install --fix-missing
-          export LLVM_VERSION=13
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh $LLVM_VERSION
-          rm ./llvm.sh
-          sudo apt install --fix-missing
-          sudo ln -s --force /usr/bin/clang-$LLVM_VERSION /usr/bin/clang
-          sudo ln -s --force /usr/bin/ld.lld-$LLVM_VERSION /usr/bin/ld.lld
-          sudo ln -s --force /usr/bin/llvm-objdump-$LLVM_VERSION /usr/bin/llvm-objdump
-          sudo ln -s --force /usr/bin/llvm-ar-$LLVM_VERSION /usr/bin/llvm-ar
-          sudo ln -s --force /usr/bin/llvm-nm-$LLVM_VERSION /usr/bin/llvm-nm
-          sudo ln -s --force /usr/bin/llvm-strip-$LLVM_VERSION /usr/bin/llvm-strip
-          sudo ln -s --force /usr/bin/llvm-objcopy-$LLVM_VERSION /usr/bin/llvm-objcopy
-          sudo ln -s --force /usr/bin/llvm-readelf-$LLVM_VERSION /usr/bin/llvm-readelf
-          sudo ln -s --force /usr/bin/clang++-$LLVM_VERSION /usr/bin/clang++
+          sudo apt update -y && sudo apt install -y repo elfutils libarchive-tools
+          export CLANG_PATH=~/neutron-clang
+          mkdir -p $CLANG_PATH
+          cd $CLANG_PATH
+          curl -LO "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman"
+          bash antman -S=latest
+          bash antman --patch=glibc
 
       - name: Git kernel
         run: |
