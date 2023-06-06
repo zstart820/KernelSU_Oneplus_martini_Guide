@@ -9,7 +9,7 @@ setup_export() {
     export CLANG_TRIPLE=aarch64-linux-gnu-
     export ARCH=arm64
     export SUBARCH=arm64
-    export KERNEL_CONFIG=vendor/lahaina-qgki_defconfig
+    export KERNEL_DEFCONFIG=vendor/lahaina-qgki_defconfig
     export SETUP_KERNELSU=true
 }
 
@@ -39,15 +39,15 @@ setup_kernelsu() {
     cd $KERNEL_PATH
     curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     # Enable KPROBES
-    grep -q "CONFIG_MODULES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
-    grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
-    grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
-    grep -q "CONFIG_KPROBE_EVENTS=y" "arch/arm64/configs/$KERNEL_CONFIG" || echo "CONFIG_KPROBE_EVENTS=y" >> "arch/arm64/configs/$KERNEL_CONFIG"
+    grep -q "CONFIG_MODULES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
+    grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
+    grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
+    grep -q "CONFIG_KPROBE_EVENTS=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_KPROBE_EVENTS=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
 }
 
 build_kernel() {
     cd $KERNEL_PATH
-    make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_CONFIG
+    make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_DEFCONFIG
     # Disable LTO
     sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' out/.config
     sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/' out/.config

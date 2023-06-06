@@ -8,7 +8,7 @@ on:
         RELEASE_CONFIG:
           description: 'Upload to Releases'
           required: true
-          default: "true"
+          default: true
           type: boolean
         KERNEL_SOURCE:
           description: 'Kernel Source'
@@ -38,12 +38,12 @@ on:
         KERNELSU_CONFIG:
           description: 'Compile KernelSU'
           required: true
-          default: "true"
+          default: true
           type: boolean
         CCACHE_CONFIG:
           description: 'Use Ccache'
           required: true
-          default: "true"
+          default: true
           type: boolean
         KERNELSU_TAG:
           description: 'Choose KernelSU branch or tag'
@@ -105,10 +105,10 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/kernel
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s "${{ github.event.inputs.KERNELSU_TAG }}"
-          grep -q "CONFIG_MODULES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
-          grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
-          grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
-          grep -q "CONFIG_KPROBE_EVENTS=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}" || echo "CONFIG_KPROBE_EVENTS=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_CONFIG }}"
+          grep -q "CONFIG_MODULES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}"
+          grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}"
+          grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}"
+          grep -q "CONFIG_KPROBE_EVENTS=y" "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}" || echo "CONFIG_KPROBE_EVENTS=y" >> "arch/arm64/configs/${{ github.event.inputs.KERNEL_DEFCONFIG }}"
 
       - name: Make kernel
         run: |
