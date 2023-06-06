@@ -103,14 +103,11 @@ jobs:
           export KERNEL_DEFCONFIG=${{ github.event.inputs.KERNEL_DEFCONFIG }}
           echo "===================Setup Export========================="
           export KERNEL_PATH=$PWD
-          export CLANG_PATH=~/proton-clang
+          export CLANG_PATH=~/neutron-clang
           export PATH=${CLANG_PATH}/bin:${PATH}
           export CLANG_TRIPLE=aarch64-linux-gnu-
           export ARCH=arm64
           export SUBARCH=arm64
-          echo "===================Setup Environment Again==================="
-          test -e "$CLANG_PATH/README.md" || git clone --depth=1 https://github.com/kdrag0n/proton-clang $CLANG_PATH
-          sudo apt install --fix-missing
           echo "=========================Make=========================="
           make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_DEFCONFIG
           sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' out/.config
