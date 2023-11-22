@@ -11,8 +11,24 @@ setup_export() {
     export SUBARCH=arm64
     export KERNEL_DEFCONFIG=vendor/lahaina-qgki_defconfig
     export LLVM_VERSION=17
-    export SETUP_KERNELSU=true
+    export SETUP_KERNELSU=true  # Enable if you want KernelSU
+    export KernelSU_TAG=main    # Select KernelSU tag or branch
+    # Custom Keystore hash and size for KernelSU Manager
+    # Use `ksud debug get-sign <apk_path>` to get them
+    if [ "$1" == "custom" ] || [ "$2" == "custom" ]; then
+        export KSU_EXPECTED_SIZE=0x352
+        export KSU_EXPECTED_HASH=f29d8d0129230b6d09edeec28c6b17ab13d842da73b0bc7552feb81090f9b09e
+    else
+        unset KSU_EXPECTED_SIZE
+        unset KSU_EXPECTED_HASH
+    fi
 }
+
+if [ "$1" == "clean" ] || [ "$2" == "clean" ]; then
+    test -d ~/.ccache && rm -rf ~/.ccache
+    test -d ~/.cache/ccache && rm -rf ~/.cache/ccache
+    test -d "$KERNEL_PATH/out" && rm -rf "$KERNEL_PATH/out"
+fi
 
 update_kernel() {
     cd $KERNEL_PATH
@@ -50,20 +66,23 @@ setup_kernelsu() {
     cd $KERNEL_PATH
     curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     # Enable KPROBES
-    grep -q "CONFIG_MODULES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_MODULES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
-    grep -q "CONFIG_KPROBES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_KPROBES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
-    grep -q "CONFIG_HAVE_KPROBES=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_HAVE_KPROBES=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
-    grep -q "CONFIG_KPROBE_EVENTS=y" "arch/arm64/configs/$KERNEL_DEFCONFIG" || echo "CONFIG_KPROBE_EVENTS=y" >> "arch/arm64/configs/$KERNEL_DEFCONFIG"
+    scripts/config --file "arch/$ARCH/configs/$KERNEL_DEFCONFIG" -e MODULES -e KPROBES -e HAVE_KPROBES -e KPROBE_EVENTS
+}
+
+unsetup_kernelsu() {
+    cd $KERNEL_PATH
+    test -e "$KERNEL_PATH/drivers/kernelsu" && rm "$KERNEL_PATH/drivers/kernelsu"
+    grep -q "kernelsu" "$KERNEL_PATH/drivers/Makefile" && sed -i '/kernelsu/d' "$KERNEL_PATH/drivers/Makefile"
+    grep -q "kernelsu" "$KERNEL_PATH/drivers/Kconfig" && sed -i '/kernelsu/d' "$KERNEL_PATH/drivers/Kconfig"
 }
 
 build_kernel() {
     cd $KERNEL_PATH
     make O=out CC="ccache clang" CXX="ccache clang++" ARCH=arm64 CROSS_COMPILE=$CLANG_PATH/bin/aarch64-linux-gnu- CROSS_COMPILE_ARM32=$CLANG_PATH/bin/arm-linux-gnueabi- LD=ld.lld $KERNEL_DEFCONFIG
     # Disable LTO
-    sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' out/.config
-    sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/' out/.config
-    sed -i 's/CONFIG_THINLTO=y/CONFIG_THINLTO=n/' out/.config
-    echo "CONFIG_LTO_NONE=y" >> out/.config
+    if [[ $(echo "$(awk '/MemTotal/ {print $2}' /proc/meminfo) < 16000000" | bc -l) -eq 1 ]]; then
+        scripts/config --file out/.config -d LTO -d LTO_CLANG -d THINLTO -e LTO_NONE
+    fi
     # Delete old files
     test -d $KERNEL_PATH/out/arch/arm64/boot && rm -rf $KERNEL_PATH/out/arch/arm64/boot/*
     # Begin compile
@@ -72,15 +91,14 @@ build_kernel() {
 
 make_anykernel3_zip() {
     cd $KERNEL_PATH
-    test -d $KERNEL_PATH/AnyKernel3 || git clone -b martini https://github.com/natsumerinchan/AnyKernel3-op9rt.git AnyKernel3
+    test -d $KERNEL_PATH/AnyKernel3 || rm -rf $KERNEL_PATH/AnyKernel3
+    git clone https://gitlab.com/inferno0230/AnyKernel3 --depth=1 $KERNEL_PATH/AnyKernel3
     if test -e $KERNEL_PATH/out/arch/arm64/boot/Image && test -d $KERNEL_PATH/AnyKernel3; then
+       zip_name="ONEPLUS9RT-v5.4.$(grep "^SUBLEVEL =" Makefile | awk '{print $3}')-$(date +"%Y%m%d").zip"
        cd $KERNEL_PATH/AnyKernel3
        cp $KERNEL_PATH/out/arch/arm64/boot/Image $KERNEL_PATH/AnyKernel3
-       zip -r Kernel-op9rt.zip *
-       # Sign zip file
-       java -jar ./tools/zipsigner.jar ./Kernel-op9rt.zip ./Kernel-op9rt-signed.zip
-       rm ./Kernel-op9rt.zip ./Image
-       mv ./Kernel-op9rt-signed.zip $KERNEL_PATH/out/arch/arm64/boot
+       zip -r ${zip_name} *
+       mv ${zip_name} $KERNEL_PATH/out/arch/arm64/boot
        cd $KERNEL_PATH
     fi
 }
@@ -100,7 +118,7 @@ if test "$SETUP_KERNELSU" == "true"; then
    setup_kernelsu
 else
    echo [INFO] KernelSU will not be Compiled
-   grep -q "kernelsu" $KERNEL_PATH/drivers/Makefile && sed -i '/kernelsu/d' $KERNEL_PATH/drivers/Makefile
+   unsetup_kernelsu
 fi
 
 build_kernel
