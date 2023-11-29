@@ -15,7 +15,7 @@ setup_export() {
     export KernelSU_TAG=main    # Select KernelSU tag or branch
     # Custom Keystore hash and size for KernelSU Manager
     # Use `ksud debug get-sign <apk_path>` to get them
-    if [ "$1" == "custom" ] || [ "$2" == "custom" ]; then
+    if [ "${1-}" == "custom" ] || [ "${2-}" == "custom" ]; then
         export KSU_EXPECTED_SIZE=0x352
         export KSU_EXPECTED_HASH=f29d8d0129230b6d09edeec28c6b17ab13d842da73b0bc7552feb81090f9b09e
     else
@@ -24,7 +24,7 @@ setup_export() {
     fi
 }
 
-if [ "$1" == "clean" ] || [ "$2" == "clean" ]; then
+if [ "${1-}" == "clean" ] || [ "${2-}" == "clean" ]; then
     test -d ~/.ccache && rm -rf ~/.ccache
     test -d ~/.cache/ccache && rm -rf ~/.cache/ccache
     test -d "$KERNEL_PATH/out" && rm -rf "$KERNEL_PATH/out"
@@ -103,6 +103,7 @@ make_anykernel3_zip() {
     fi
 }
 
+clear
 setup_export
 
 # update_kernel   //Please uncomment if you need it
