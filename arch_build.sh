@@ -47,7 +47,7 @@ setup_environment() {
 
 setup_kernelsu() {
     cd $KERNEL_PATH
-    curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+    curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s $KernelSU_TAG
     # Enable KPROBES
     scripts/config --file "arch/$ARCH/configs/$KERNEL_DEFCONFIG" -e MODULES -e KPROBES -e HAVE_KPROBES -e KPROBE_EVENTS
 }
