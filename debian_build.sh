@@ -2,27 +2,25 @@
 
 set -eux
 
-setup_export() {
-    export KERNEL_PATH=$PWD
-    export CLANG_PATH=~/toolchains/neutron-clang
-    export PATH=${CLANG_PATH}/bin:${PATH}
-    export CLANG_TRIPLE=aarch64-linux-gnu-
-    export ARCH=arm64
-    export SUBARCH=arm64
-    export KERNEL_DEFCONFIG=vendor/lahaina-qgki_defconfig
-    export LLVM_VERSION=17
-    export SETUP_KERNELSU=true  # Enable if you want KernelSU
-    export KernelSU_TAG=main    # Select KernelSU tag or branch
-    # Custom Keystore hash and size for KernelSU Manager
-    # Use `ksud debug get-sign <apk_path>` to get them
-    if [ "${1-}" == "custom" ] || [ "${2-}" == "custom" ]; then
-        export KSU_EXPECTED_SIZE=0x352
-        export KSU_EXPECTED_HASH=f29d8d0129230b6d09edeec28c6b17ab13d842da73b0bc7552feb81090f9b09e
-    else
-        unset KSU_EXPECTED_SIZE
-        unset KSU_EXPECTED_HASH
-    fi
-}
+export KERNEL_PATH=$PWD
+export CLANG_PATH=~/toolchains/neutron-clang
+export PATH=${CLANG_PATH}/bin:${PATH}
+export CLANG_TRIPLE=aarch64-linux-gnu-
+export ARCH=arm64
+export SUBARCH=arm64
+export KERNEL_DEFCONFIG=vendor/lahaina-qgki_defconfig
+export LLVM_VERSION=17
+export SETUP_KERNELSU=true  # Enable if you want KernelSU
+export KernelSU_TAG=main    # Select KernelSU tag or branch
+# Custom Keystore hash and size for KernelSU Manager
+# Use `ksud debug get-sign <apk_path>` to get them
+if [ "${1-}" == "custom" ] || [ "${2-}" == "custom" ]; then
+    export KSU_EXPECTED_SIZE=0x352
+    export KSU_EXPECTED_HASH=f29d8d0129230b6d09edeec28c6b17ab13d842da73b0bc7552feb81090f9b09e
+else
+    unset KSU_EXPECTED_SIZE
+    unset KSU_EXPECTED_HASH
+fi
 
 if [ "${1-}" == "clean" ] || [ "${2-}" == "clean" ]; then
     test -d ~/.ccache && rm -rf ~/.ccache
@@ -104,7 +102,6 @@ make_anykernel3_zip() {
 }
 
 clear
-setup_export
 
 # update_kernel   //Please uncomment if you need it
 
