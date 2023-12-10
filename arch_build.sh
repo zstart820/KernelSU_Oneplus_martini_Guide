@@ -74,7 +74,7 @@ build_kernel() {
 
 make_anykernel3_zip() {
     cd $KERNEL_PATH
-    test -d $KERNEL_PATH/AnyKernel3 || rm -rf $KERNEL_PATH/AnyKernel3
+    test -d $KERNEL_PATH/AnyKernel3 && rm -rf $KERNEL_PATH/AnyKernel3
     git clone https://gitlab.com/inferno0230/AnyKernel3 --depth=1 $KERNEL_PATH/AnyKernel3
     if test -e $KERNEL_PATH/out/arch/arm64/boot/Image && test -d $KERNEL_PATH/AnyKernel3; then
        zip_name="ONEPLUS9RT-v5.4.$(grep "^SUBLEVEL =" Makefile | awk '{print $3}')-$(date +"%Y%m%d").zip"
