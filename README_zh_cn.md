@@ -5,7 +5,7 @@
 
 我已经把[原来的仓库](https://github.com/natsumerinchan/KernelSU_Oneplus_9RT_Action.git)设为私有。
 
-## 警告:warning: :warning: :warning:
+## 警告 :warning: :warning: :warning:
 - 1.在刷机之前请务必备份官方的boot.img和vendor_dlkm.img！！！你可以使用[ssut/payload-dumper-go](https://github.com/ssut/payload-dumper-go.git)从ROM包的`payload.bin`中提取镜像。（必须从和当前系统相同版本的ROM包提取）
 - 2.我不是这些内核的作者，因此我不会在本仓库发布任何编译产物，请你自行fork本仓库（同步到你的私人仓库更好），然后自行运行工作流编译内核。
 - 3."如果你不是内核作者，使用他人的劳动成果构建KernelSU，请仅供自己使用，不要分享给别人，这是对作者的劳动成果的尊重。" --[xiaoleGun/KernelSU_Action](https://github.com/xiaoleGun/KernelSU_Action.git) （我已经创建了一个私有仓库为我编译）
